@@ -46,6 +46,7 @@ function initializeGrid() {
 function initializeSnake() {
 	var snake = {
 	  headPosition: [20,20],
+	  lastHeadPosition: [20,20],
 	  direction: RIGHT,
 	  body: [[20,20]],
 	};
@@ -104,9 +105,13 @@ function move(direction, position) {
 
 
 function draw(snake) {
+	//temp for now?
+  var clearX = snake.lastHeadPosition[X];
+	var clearY = snake.lastHeadPosition[Y];
+  $( "#position-" + clearX + "-" + clearY).text(EMPTY);
+
 	var headX = snake.headPosition[X];
 	var headY = snake.headPosition[Y];
-
   $( "#position-" + headX + "-" + headY).text(HEAD);
 
 }
@@ -134,7 +139,10 @@ $(document).ready(function() {
 
 
    	$(document).on("keydown", function(event) {
+   		event.preventDefault();
    		snake.direction = keyHandler(event);
+
+   		snake.lastHeadPosition = snake.headPosition;
    		snake.headPosition = move(snake.direction, snake.headPosition);
    		draw(snake);
    	});
