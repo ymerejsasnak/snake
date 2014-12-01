@@ -1,12 +1,12 @@
 body {
-	height: 100vh;
+	height: 90vh;
 }
 
 
 #grid-container {
-	margin: 8% auto;
+	margin: 5% auto;
 	width: 45%;
-	height: 80%;
+	height: 90%;
 	border: 1px solid black;
 }
 
@@ -18,4 +18,5 @@ body {
 	border: 1px solid gray;
   width: 2.5%;
   height: 2.5%;
+  color: blue;
 }
