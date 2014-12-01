@@ -2,6 +2,9 @@
 
 var GRID_SIZE = 40;
 
+var X = 0;
+var Y = 1;
+
 //possible cell states
 var EMPTY = " ";
 var HEAD = "O";
@@ -27,10 +30,11 @@ function initializeGrid() {
   
   var grid = {};
 
-  //fill empty grid
-  for (x = 0; x < GRID_SIZE; x++) {
-  	for (y = 0; y < GRID_SIZE; y++) {
+  //fill empty grid and create associated divs
+  for (y = 0; y < GRID_SIZE; y++) {
+  	for (x = 0; x < GRID_SIZE; x++) {
   		grid[x + "," + y] = EMPTY;
+  		$("#grid-container").append("<div class='cell' id='position-" + x + "-" + y + "'> </div>");
   	}
   }
 
@@ -44,20 +48,9 @@ function initializeSnake() {
 	  headPosition: [20,20],
 	  direction: RIGHT,
 	  body: [[20,20]],
-  };
+	};
   
   return snake;
-}
-
-
-
-function render(grid) {
-	for (x = 0; x < GRID_SIZE; x++) {
-  	for (y = 0; y < GRID_SIZE; y++) {
-  		var currentCell = grid[x + "," + y];
-      $("#grid-container").append("<div class='cell'>" + currentCell + "</div>");
-    }
-  }
 }
 
 
@@ -79,8 +72,6 @@ function keyHandler(keyEvent) {
       direction = DOWN;
       break;
   }
-
-  //temp
   
   return direction;
 
@@ -88,21 +79,43 @@ function keyHandler(keyEvent) {
 
 
 
-function move() {
+function move(direction, position) {
+  var x = position[X];
+  var y = position[Y];
+
+  switch (direction) {
+  	case LEFT:
+        x -= 1;
+  	  break;
+  	case UP:
+        y -= 1;
+  	  break;
+    case RIGHT:
+        x += 1;
+      break;
+  	case DOWN:
+        y += 1;
+  	  break;
+  }
+
+  return [x, y];
+}
+
+
+
+function draw(snake) {
+	var headX = snake.headPosition[X];
+	var headY = snake.headPosition[Y];
+
+  $( "#position-" + headX + "-" + headY).text(HEAD);
 
 }
 
 
 
-function gameLoop {
-	grid[snake.headPosition.join()] = HEAD;
-
-  render(grid);
-
-
-  $(document).on("keydown", snake.direction = keyHandler);
+function gameLoop(grid, snake) {
+	
 }
-
 
 
 
@@ -118,9 +131,22 @@ $(document).ready(function() {
   var snake = initializeSnake();
  
   
-  gameLoop();
+
+
+   	$(document).on("keydown", function(event) {
+   		snake.direction = keyHandler(event);
+   		snake.headPosition = move(snake.direction, snake.headPosition);
+   		draw(snake);
+   	});
+
+    
+ 
+  //grid[snake.headPosition.join()] = HEAD;
+ 
+  
 
   
+
   
 
 
