@@ -1,0 +1,21 @@
+body {
+	height: 100vh;
+}
+
+
+#grid-container {
+	margin: 8% auto;
+	width: 45%;
+	height: 80%;
+	border: 1px solid black;
+}
+
+
+.cell {
+	float: left;
+	margin: 0;
+	box-sizing: border-box;
+	border: 1px solid gray;
+  width: 2.5%;
+  height: 2.5%;
+}
