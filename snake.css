@@ -1,13 +1,15 @@
 body {
-	height: 90vh;
+	height: 100vh;
+	background: linear-gradient(#111, #222);
 }
 
 
 #grid-container {
-	margin: 5% auto;
-	width: 45%;
-	height: 90%;
-	border: 1px solid #000;
+	margin: 2% auto;
+	width: 50%;
+	height: 80.7%;
+	border: 1px solid black;
+	background: linear-gradient(#DDD, #AAA);
 }
 
 
@@ -15,10 +17,28 @@ body {
 	float: left;
 	margin: 0;
 	box-sizing: border-box;
-	border: 1px solid #444;
-  width: 2.5%;
+	width: 2.5%;
   height: 2.5%;
-  color: #00F;
+  border: 1px solid black;
 }
 
 
+
+
+.food {
+	background: radial-gradient(#F44, #F00);
+	border-radius: 50%;
+	box-shadow: 2px 2px 5px black;
+}
+
+.segment {
+	background: radial-gradient(#99F, #44F);
+	border-radius: 30%;
+	box-shadow: 2px 2px 5px black;
+}
+
+.head {
+	background: radial-gradient(#44F, #00F);
+	border-radius: 50%;
+	box-shadow: 2px 2px 5px black;
+}

@@ -1,3 +1,5 @@
+"use strict";
+
 //these are intended to act as constants for readability of code
 
 var GRID_SIZE = 40;
@@ -22,44 +24,74 @@ var UP_ARROW = 38;
 var RIGHT_ARROW = 39;
 var DOWN_ARROW = 40;
 
+var FPS = 30;
 
 
 
 function initializeGrid() {
 	// grid will be object in format of coordinate pair as key, item in that space as value denoted by character: {x,y: char}  ie {1,1: " "}
-  
   var grid = {};
 
-  //fill empty grid and create associated divs
-  for (y = 0; y < GRID_SIZE; y++) {
-  	for (x = 0; x < GRID_SIZE; x++) {
-  		grid[x + "," + y] = EMPTY;
-  		$("#grid-container").append("<div class='cell' id='position-" + x + "-" + y + "'> </div>");
-  	}
+  for ( var y = 0; y < GRID_SIZE; y++ ) {
+  	for ( var x = 0; x < GRID_SIZE; x++ ) {
+      
+      grid[x + "," + y] = EMPTY;
+
+   	}
+  }
+  grid["20,20"] = HEAD;
+  
+  return grid;
+ }
+
+
+
+function render(grid) {
+
+  var container = $( "#grid-container" );
+  container.empty();
+
+  for (var pos in grid) {
+    container.append( "<div class='cell'>" + grid[pos] + "</div>" );    //need to id the cells by position?
   }
 
-  return grid;
 }
 
 
 
-function initializeSnake() {
-	var snake = {
-	  headPosition: [20,20],
-	  lastHeadPosition: [20,20],
-	  direction: RIGHT,
-	  body: [[20,20]],
-	};
+function run(grid, snake) {
+  grid[snake.headPosition.join(",")] = EMPTY;
+
+  snake.headPosition = move(snake.headPosition, snake.direction);
   
-  return snake;
+  grid[snake.headPosition.join(",")] = HEAD;
+
+  snake.bodySegments.shift(snake.headPosition);
+  
+
+  snake.bodySegments.pop(); //temp...only when has 1 segment(head)
+
+  
+
+  render(grid);
 }
 
 
+function Snake(head) {
+	this.headPosition = head;
+	this.direction = "r";
+  this.bodySegments = [ head ];
+};
 
-function keyHandler(keyEvent) {
+
+
+
+
+
+function keyHandler( keyEvent ) {
   var direction;
 
-  switch (keyEvent.which) {
+  switch ( keyEvent.which ) {
     case LEFT_ARROW:
       direction = LEFT;
       break;
@@ -80,23 +112,36 @@ function keyHandler(keyEvent) {
 
 
 
-function move(direction, position) {
+function move( position, direction ) {
   var x = position[X];
   var y = position[Y];
 
-  switch (direction) {
+  switch ( direction ) {
   	case LEFT:
-        x -= 1;
+      x -= 1;
   	  break;
   	case UP:
-        y -= 1;
+      y -= 1;
   	  break;
     case RIGHT:
-        x += 1;
+      x += 1;
       break;
   	case DOWN:
-        y += 1;
+      y += 1;
   	  break;
+  }
+
+  if ( x === 40 ) {
+    x = 0;
+  }
+  if ( x === -1 ) {
+    x = 39;
+  }
+  if ( y === 40 ) {
+    y = 0;
+  }
+  if ( y === -1 ) { 
+    y = 39;
   }
 
   return [x, y];
@@ -104,58 +149,40 @@ function move(direction, position) {
 
 
 
-function draw(snake) {
-	//temp for now?
-  var clearX = snake.lastHeadPosition[X];
-	var clearY = snake.lastHeadPosition[Y];
-  $( "#position-" + clearX + "-" + clearY).text(EMPTY);
-
-	var headX = snake.headPosition[X];
-	var headY = snake.headPosition[Y];
-  $( "#position-" + headX + "-" + headY).text(HEAD);
-
-}
-
-
-
-function gameLoop(grid, snake) {
-	
-}
 
 
 
 
-
-
-
-
-$(document).ready(function() {
+$( document ).ready( function() {
   
 
   var grid = initializeGrid();
-  var snake = initializeSnake();
+  var snake = new Snake([20,20]);
+  
+
+  render(grid);
+
+
+
+
+  
+
+
+ 
+
+  $( document ).on( "keydown", function( event ) {
+
+    event.preventDefault();
+    snake.direction = keyHandler( event );
+     
+  });
+
  
   
+// Start the game loop
+var intervalID = setInterval(function() { run(grid, snake )}, 1000 / FPS);
 
-
-   	$(document).on("keydown", function(event) {
-   		event.preventDefault();
-   		snake.direction = keyHandler(event);
-
-   		snake.lastHeadPosition = snake.headPosition;
-   		snake.headPosition = move(snake.direction, snake.headPosition);
-   		draw(snake);
-   	});
-
-    
- 
-  //grid[snake.headPosition.join()] = HEAD;
- 
-  
-
-  
-
-  
-
+ // To stop the game, use the following:
+  //clearInterval(intervalId);
 
 });
