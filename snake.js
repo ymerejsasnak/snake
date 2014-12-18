@@ -49,11 +49,9 @@ function initializeGrid() {
 }
 
 
-function Snake(head) {
-  this.headPosition = head;
+function Snake() {
   this.direction = "r";
-  this.bodySegments = [ head ];
-  this.bodyLength = 1;
+  this.bodySegments = [ [20,20] ];
 }
 
 
@@ -73,38 +71,44 @@ function render(grid) {
 }
 
 
+
+
+
 function run(grid, snake) {
-  grid[snake.headPosition.join(",")] = EMPTY;
+  var tailIndex = snake.bodySegments.length - 1;
 
-  snake.headPosition = move(snake.headPosition, snake.direction);
+  grid[ snake.bodySegments[tailIndex].join(",") ] = EMPTY;
   
+  snake.bodySegments.unshift( move(snake.bodySegments[0], snake.direction) );
+  
+  snake.bodySegments.pop(); 
 
-  if ( grid[snake.headPosition.join(",")] === FOOD ) {
-    eatFood(grid, snake);
+  if ( grid[snake.bodySegments[0].join(",")] === FOOD ) {
+    eatFood(grid, snake, tailIndex);
   }
 
-  grid[snake.headPosition.join(",")] = HEAD;
+  snake.bodySegments.forEach( function(element, index, array) {
+    grid[array[index].join(",")] = BODY;
+  });
 
-  snake.bodySegments.shift(snake.headPosition);
+  grid[ snake.bodySegments[0].join(",") ] = HEAD;
   
-  if (snake.bodySegments.length > snake.bodyLength) {
-    snake.bodySegments.pop(); 
-  }
-
-  //need a foreach to add the segments to the grid
 
   render(grid);
-  
-  return grid;
+
 }
 
 
-function eatFood(grid, snake) {
-  snake.bodyLength += 1;
+
+
+function eatFood(grid, snake, tailIndex) {
+  snake.bodySegments.push( snake.bodySegments[tailIndex] );
+  
   var food = new Food();
   grid[food.position.join(",")] = FOOD;
-  
 }
+
+
 
 
 function keyHandler( keyEvent ) {
@@ -173,7 +177,7 @@ function move( position, direction ) {
 $( document ).ready( function() {
   
   var grid = initializeGrid();
-  var snake = new Snake([20,20]);
+  var snake = new Snake();
   
   var food = new Food();
 
@@ -193,7 +197,7 @@ $( document ).ready( function() {
   
   // game loop
   var intervalID = setInterval(function() { 
-    grid = run(grid, snake);
+    run(grid, snake);
   }, 1000 / FPS);
 
   // To stop the game, use the following:
