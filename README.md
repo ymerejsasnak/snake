@@ -4,15 +4,11 @@ snake
 Odin project - Snake game using javascript/jQuery
 
 <pre>
--basic game done
-
--need win/lose conditions
-
 -fix it so new food (or whatever) can't appear in already occupied grid space
 
 -keep score
 
--adjust speed (start slower, but speed up as game goes on)
+-adjust speed (start slower, but speed up as game goes on) (snake has speed property, but how do I change it in setInterval??)
 
 -maybe make more fruit appear the longer the game goes on (instead of just one at a time)
 
