@@ -11,6 +11,7 @@ var Y = 1;
 var EMPTY = " ";
 var HEAD = "O";
 var BODY = "o";
+var FOOD = "*";
 
 //direction values
 var RIGHT = "r";
@@ -28,6 +29,9 @@ var FPS = 30;
 
 
 
+
+
+
 function initializeGrid() {
 	// grid will be object in format of coordinate pair as key, item in that space as value denoted by character: {x,y: char}  ie {1,1: " "}
   var grid = {};
@@ -40,10 +44,22 @@ function initializeGrid() {
    	}
   }
   grid["20,20"] = HEAD;
-  
-  return grid;
- }
 
+  return grid;
+}
+
+
+function Snake(head) {
+  this.headPosition = head;
+  this.direction = "r";
+  this.bodySegments = [ head ];
+  this.bodyLength = 1;
+}
+
+
+function Food() {
+  this.position = [Math.floor(Math.random() * 40), Math.floor(Math.random() * 40)]  //right now food will overlap and snake may start on food....
+}
 
 
 function render(grid) {
@@ -54,9 +70,7 @@ function render(grid) {
   for (var pos in grid) {
     container.append( "<div class='cell'>" + grid[pos] + "</div>" );    //need to id the cells by position?
   }
-
 }
-
 
 
 function run(grid, snake) {
@@ -64,28 +78,33 @@ function run(grid, snake) {
 
   snake.headPosition = move(snake.headPosition, snake.direction);
   
+
+  if ( grid[snake.headPosition.join(",")] === FOOD ) {
+    eatFood(grid, snake);
+  }
+
   grid[snake.headPosition.join(",")] = HEAD;
 
   snake.bodySegments.shift(snake.headPosition);
   
+  if (snake.bodySegments.length > snake.bodyLength) {
+    snake.bodySegments.pop(); 
+  }
 
-  snake.bodySegments.pop(); //temp...only when has 1 segment(head)
-
-  
+  //need a foreach to add the segments to the grid
 
   render(grid);
+  
+  return grid;
 }
 
 
-function Snake(head) {
-	this.headPosition = head;
-	this.direction = "r";
-  this.bodySegments = [ head ];
-};
-
-
-
-
+function eatFood(grid, snake) {
+  snake.bodyLength += 1;
+  var food = new Food();
+  grid[food.position.join(",")] = FOOD;
+  
+}
 
 
 function keyHandler( keyEvent ) {
@@ -107,9 +126,7 @@ function keyHandler( keyEvent ) {
   }
   
   return direction;
-
 }
-
 
 
 function move( position, direction ) {
@@ -155,18 +172,13 @@ function move( position, direction ) {
 
 $( document ).ready( function() {
   
-
   var grid = initializeGrid();
   var snake = new Snake([20,20]);
   
+  var food = new Food();
 
+  grid[food.position.join(",")] = FOOD;
   render(grid);
-
-
-
-
-  
-
 
  
 
@@ -179,10 +191,12 @@ $( document ).ready( function() {
 
  
   
-// Start the game loop
-var intervalID = setInterval(function() { run(grid, snake )}, 1000 / FPS);
+  // game loop
+  var intervalID = setInterval(function() { 
+    grid = run(grid, snake);
+  }, 1000 / FPS);
 
- // To stop the game, use the following:
+  // To stop the game, use the following:
   //clearInterval(intervalId);
 
 });
