@@ -5,8 +5,7 @@ Odin project - Snake game using javascript/jQuery
 
 <pre>
 -snake doesn't die if it only has one body segment other than the head and doubles back on itself (they just swap, is this ok?)
-
--need to speed up as it goes along
+(possible alternate solutions:  start with 3 body sections...or start with at least 2 and don't allow backwards direction)
 
 -keep tweaking visuals
 
@@ -19,14 +18,20 @@ Odin project - Snake game using javascript/jQuery
 
 
 
--fix it so new food (or whatever) can't appear in already occupied grid space
+-fix it so new elements can't appear in already occupied grid space
 
 
 -maybe make more fruit appear the longer the game goes on (instead of just one at a time)
 
 
-?-add more unusual features like other items that do different things (affect speed, just points, walls, moving enemies, etc.)
--maybe change to health function where you eat enough food to 'level up' and THEN you grow (then can have bad things make you lose health or segment or whatever)
+element ideas:
+food (gain experience and points)
+health item (refill life and get points)
+just score (just gives various amounts of points)
+stationary bad cells (lava, spikes, whatever)
+  -variations: lose health, lose segment, die
+moving enemies (same variations as above)
+powerup that lets you eat an enemy or survive stationary bad elements?
 
 
 
@@ -36,5 +41,7 @@ needed experience to get to next level === current level
 levelup adds a segment
 score gained depends on level and number of segments and type of scoring item
 max health depends on level and segments?
+speed depends on level (once i figure out how to speed it up properly)
+number and type of elements that appears depends on level
 
 </pre>
