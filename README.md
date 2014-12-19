@@ -21,10 +21,10 @@ Odin project - Snake game using javascript/jQuery
 
 
 
-element ideas:
+- one more element:  higher levels- bottomless pit (die -- or maybe just reduced to head?)
 
-higher levels- bottomless pit (die)
-moving enemies? (same variations as above)
-powerup that lets you eat an enemy or survive stationary bad elements?
+-use localstorage to store high score! (very easy)
+
+-add endgame code (you died, your score vs highscore, play again, blah blah blah)
 
 </pre>
