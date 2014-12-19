@@ -62,3 +62,8 @@ li span {
 	border-radius: 20%;
 	box-shadow: 2px 2px 5px black;
 }
+
+.lava {
+	background: radial-gradient(#A44, #A60);
+	border-radius: 35%;
+}

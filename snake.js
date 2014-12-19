@@ -11,7 +11,8 @@ var Y = 1;
 var EMPTY = " ";
 var HEAD = "O";
 var BODY = "o";
-var FOOD = "*";
+var FOOD = "*"; //eat to level up and grow (and get some points)
+var LAVA = "~"; //destroys a body segment
 
 //direction values
 var RIGHT = "r";
@@ -82,6 +83,9 @@ Game.prototype.render = function() {
       case FOOD:
         cellClass = "food";
         break;
+      case LAVA:
+        cellClass = "lava";
+        break;
     }
     container.append( "<div class='cell " + cellClass + "'></div>" );   
   }
@@ -102,15 +106,31 @@ Game.prototype.run = function() {
   this.snake.bodySegments.pop();
   
 
+
+  //collision detection needs its own function?
+
   //hits itself
   if ( this.grid[ this.snake.bodySegments[0].join(",") ] === BODY) { 
     this.snake.alive = false; 
   }
   
-  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === FOOD ) {
-    this.ateFood(tailIndex);
-
+  //hits lava, loses a segment
+  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === LAVA) { 
+    this.grid[ this.snake.bodySegments[tailIndex].join(",") ] = EMPTY; 
+    this.snake.bodySegments.pop(); 
+    this.snake.maxHealth -= 1;
+    this.snake.health -= 1;
+    if (this.snake.bodySegments.length === 0) {
+      this.snake.alive = false;
+    }
   }
+
+  //hits food
+  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === FOOD ) {
+    this.ateFood();
+  }
+
+
 
   this.snake.bodySegments.forEach( function(element, index, array) {
     this.grid[array[index].join(",")] = BODY;
@@ -121,26 +141,37 @@ Game.prototype.run = function() {
   this.render();
 }
 
-Game.prototype.ateFood = function(tailIndex) {
-  //get experience
-  this.snake.experience += 1;
-  this.score += this.snake.level; //food gives 1 point per current level
-
-  //level up
-  if (this.snake.experience === this.snake.level) {
-    this.snake.level += 1;
-    this.snake.experience = 0;
-    this.snake.maxHealth = this.snake.level * 2;
-    this.snake.health = this.snake.maxHealth;
-    this.snake.bodySegments.push( this.snake.bodySegments[tailIndex] );
-  }
-
+Game.prototype.ateFood = function() {
   //replace eaten food
   var food = new Food();
   this.grid[food.position.join(",")] = FOOD;
-  
+
+  //get experience
+  this.snake.experience += 1;
+  this.score += this.snake.bodySegments.length; //food gives 1 point per snake length
+
+  //level up
+  if (this.snake.experience === this.snake.level) {
+    this.levelUp();
+  }
 }
 
+Game.prototype.levelUp = function() {
+  this.snake.level += 1;
+  this.snake.experience = 0;
+  this.snake.bodySegments.push( this.snake.bodySegments[this.snake.bodySegments.length - 1] );
+  this.snake.maxHealth = this.snake.level + this.snake.bodySegments.length; //max health is level + length
+  this.snake.health = this.snake.maxHealth;
+  
+
+  //add lava starting at level 3, # added increases by half of current level, rounded down
+  if (this.snake.level > 2) {
+    for (var i = 0; i < Math.floor(this.snake.level / 2); i++) {
+      var lava = new Lava();
+      this.grid[lava.position.join(",")] = LAVA;
+    }
+  }
+}
 
 
 
@@ -156,14 +187,14 @@ function Snake() {
 
 
 function Food() {
-  this.position = [Math.floor(Math.random() * 40), Math.floor(Math.random() * 40)]  
+  this.position = [Math.floor(Math.random() * 40), Math.floor(Math.random() * 40)]; 
   //right now food will overlap and snake may start on food....
 }
 
 
-
-
-
+function Lava() {
+  this.position = [Math.floor(Math.random() * 40), Math.floor(Math.random() * 40)];
+}
 
 
 
@@ -276,8 +307,10 @@ $( document ).ready( function() {
         clearInterval(intervalID);
       }
       game.displayScore();
-    }, 1000 / game.speed);  //temporary until i adjust speed
+    }, 1000 / game.speed);  
   
   
+  //snake died code here
+
 
 });
