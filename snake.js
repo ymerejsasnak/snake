@@ -48,10 +48,31 @@ function initializeGrid() {
 }
 
 
+
+function Game() {
+  this.score = 0;
+  this.speed = 10; //temp?
+  this.grid = initializeGrid();
+  this.snake = new Snake();
+}
+
+Game.prototype.displayScore = function() {
+  $("#level").text(this.snake.level);
+  $("#experience").text(this.snake.experience);
+  $("#health").text(this.snake.health);
+  $("#speed").text(this.speed);
+  $("#score").text(this.score);
+}
+
+
+
 function Snake() {
+  this.level = 1;
+  this.experience = 0;
+  this.health = this.level * 2;
   this.direction = "r";
   this.bodySegments = [ [20,20] ];
-  this.speed = 5;
+  this.alive = true;
 }
 
 
@@ -67,7 +88,21 @@ function render(grid) {
   container.empty();
 
   for (var pos in grid) {
-    container.append( "<div class='cell'>" + grid[pos] + "</div>" );    //need to id the cells by position for div stuff??
+    var cellClass = "";
+
+    switch (grid[pos]) {
+      case HEAD:
+        cellClass = "head";
+        break;
+      case BODY:
+        cellClass = "segment";
+        break;
+      case FOOD:
+        cellClass = "food";
+        break;
+    }
+    
+    container.append( "<div class='cell " + cellClass + "'></div>" );   
   }
 }
 
@@ -75,7 +110,8 @@ function render(grid) {
 
 
 
-function run(grid, snake, intervalID) {
+
+function run(grid, snake) {
   
   var tailIndex = snake.bodySegments.length - 1;
   var lastHeadPosition = snake.bodySegments[0];
@@ -91,7 +127,7 @@ function run(grid, snake, intervalID) {
   
 
   if ( grid[snake.bodySegments[0].join(",")] === BODY) { 
-    dead(intervalID); 
+    snake.alive = false; 
   }
   
   if ( grid[snake.bodySegments[0].join(",")] === FOOD ) {
@@ -105,6 +141,7 @@ function run(grid, snake, intervalID) {
   grid[ snake.bodySegments[0].join(",") ] = HEAD;
   
   render(grid);
+  
  
 }
 
@@ -113,8 +150,6 @@ function run(grid, snake, intervalID) {
 
 function eatFood(grid, snake, tailIndex) {
   snake.bodySegments.push( snake.bodySegments[tailIndex] );
-  snake.speed += 5;
-  console.log(snake.speed)
   
   var food = new Food();
   grid[food.position.join(",")] = FOOD;
@@ -182,41 +217,39 @@ function move( position, direction ) {
 }
 
 
-function dead(intervalID) {
-  clearInterval(intervalID);
-
-}
-
-
 
 
 $( document ).ready( function() {
   
-  var grid = initializeGrid();
-  var snake = new Snake();
   
-  var food = new Food();
+  var game = new Game();
 
-  grid[food.position.join(",")] = FOOD;
-  render(grid);
+  for (var i = 0; i < 5; i++) {
+    var food = new Food();
+    game.grid[food.position.join(",")] = FOOD;
+  }
 
- 
+
+  render(game.grid);
+
 
   $( document ).on( "keydown", function( event ) {
 
     event.preventDefault();
-    snake.direction = keyHandler( event );
+    game.snake.direction = keyHandler( event );
      
   });
 
  
-  
-  // game loop
+  //game loop
   var intervalID = setInterval(function() { 
-    run(grid, snake, intervalID);
-
-  }, 1000 / snake.speed);
-
-    
+      run(game.grid, game.snake);
+      if (!game.snake.alive) {
+        clearInterval(intervalID);
+      }
+      game.displayScore();
+    }, 1000 / game.speed);  //temporary until i adjust speed
+  
+  
 
 });

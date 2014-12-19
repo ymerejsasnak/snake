@@ -4,6 +4,12 @@ body {
 }
 
 
+#status-box {
+	float: left;
+	width: 20%;
+	background: white;
+}
+
 #grid-container {
 	margin: 2% auto;
 	width: 50%;
@@ -16,10 +22,8 @@ body {
 .cell {
 	float: left;
 	margin: 0;
-	box-sizing: border-box;
 	width: 2.5%;
   height: 2.5%;
-  border: 1px solid black;
   text-align: center;
   color: red;
   text-shadow: 1px 1px 2px black;
