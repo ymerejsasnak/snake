@@ -49,21 +49,39 @@ li span {
 .food {
 	background-image: url(apple.png);
 	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	border-radius: 50%;
+	background-color: rgba(255, 0, 0, 0.2);
+	box-shadow: 0px 0px 5px red;
 }
 
 .segment {
-	background: radial-gradient(#99F, #44F);
+	background: url(tracks.png);
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
 	border-radius: 50%;
-	box-shadow: 2px 2px 5px black;
 }
 
 .head {
-	background: radial-gradient(#44F, #00F);
-	border-radius: 20%;
-	box-shadow: 2px 2px 5px black;
+	background-image: url(kitty.png);
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
-.lava {
-	background: radial-gradient(#A44, #A60);
-	border-radius: 35%;
+.fire {
+	background-image: url(fire.png);
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	margin: 0 auto;
+}
+
+.spike {
+	background-image: url(spikes.png);
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
 }

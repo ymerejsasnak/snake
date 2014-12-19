@@ -12,7 +12,8 @@ var EMPTY = " ";
 var HEAD = "O";
 var BODY = "o";
 var FOOD = "*"; //eat to level up and grow (and get some points)
-var LAVA = "~"; //destroys a body segment
+var FIRE = "~"; //destroys a body segment
+var SPIKE = "^"; //lose 1 health per level
 
 //direction values
 var RIGHT = "r";
@@ -83,9 +84,13 @@ Game.prototype.render = function() {
       case FOOD:
         cellClass = "food";
         break;
-      case LAVA:
-        cellClass = "lava";
+      case FIRE:
+        cellClass = "fire";
         break;
+      case SPIKE:
+        cellClass = "spike";
+        break;
+
     }
     container.append( "<div class='cell " + cellClass + "'></div>" );   
   }
@@ -107,20 +112,28 @@ Game.prototype.run = function() {
   
 
 
-  //collision detection needs its own function?
+  //collision detection needs its own function, can run it by element type?
 
   //hits itself
   if ( this.grid[ this.snake.bodySegments[0].join(",") ] === BODY) { 
     this.snake.alive = false; 
   }
   
-  //hits lava, loses a segment
-  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === LAVA) { 
+  //hits fire, loses a segment
+  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === FIRE) { 
     this.grid[ this.snake.bodySegments[tailIndex].join(",") ] = EMPTY; 
     this.snake.bodySegments.pop(); 
     this.snake.maxHealth -= 1;
     this.snake.health -= 1;
-    if (this.snake.bodySegments.length === 0) {
+    if (this.snake.bodySegments.length === 0 || this.snake.health <= 0) {
+      this.snake.alive = false;
+    }
+  }
+
+  //hits spike, loses 2 health
+  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === SPIKE ) {
+    this.snake.health -= 2;
+    if (this.snake.health <= 0) {
       this.snake.alive = false;
     }
   }
@@ -132,6 +145,7 @@ Game.prototype.run = function() {
 
 
 
+  //build body and head in new position
   this.snake.bodySegments.forEach( function(element, index, array) {
     this.grid[array[index].join(",")] = BODY;
   }, this);
@@ -161,15 +175,24 @@ Game.prototype.levelUp = function() {
   this.snake.experience = 0;
   this.snake.bodySegments.push( this.snake.bodySegments[this.snake.bodySegments.length - 1] );
   this.snake.maxHealth = this.snake.level + this.snake.bodySegments.length; //max health is level + length
-  this.snake.health = this.snake.maxHealth;
+  this.snake.health = this.snake.maxHealth; //leveling fills health
   
 
-  //add lava starting at level 3, # added increases by half of current level, rounded down
+  //add fire starting at level 3, # added increases by half of current level, rounded down
   if (this.snake.level > 2) {
     for (var i = 0; i < Math.floor(this.snake.level / 2); i++) {
-      var lava = new Lava();
-      this.grid[lava.position.join(",")] = LAVA;
+      var fire = new Lava();
+      this.grid[fire.position.join(",")] = FIRE;
     }
+  }
+
+  //add spikes starting at level 1, 2 per level
+  if (this.snake.level > 1) {
+    for (var i = 0; i < 2; i++) {
+      var spike = new Spike();
+      this.grid[spike.position.join(",")] = SPIKE;
+    }
+
   }
 }
 
@@ -186,9 +209,9 @@ function Snake() {
 }
 
 
+//(can these all be made into single function that accepts a type?)
 function Food() {
   this.position = [Math.floor(Math.random() * 40), Math.floor(Math.random() * 40)]; 
-  //right now food will overlap and snake may start on food....
 }
 
 
@@ -196,6 +219,9 @@ function Lava() {
   this.position = [Math.floor(Math.random() * 40), Math.floor(Math.random() * 40)];
 }
 
+function Spike() {
+  this.position = [Math.floor(Math.random() * 40), Math.floor(Math.random() * 40)];
+}
 
 
 

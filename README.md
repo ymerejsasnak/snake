@@ -12,21 +12,20 @@ Odin project - Snake game using javascript/jQuery
 -currently can sort of 'pause' the game by hitting any button other than arrows...leave it for now, but will have to fix in the end
 
 
+-add reset button and pause button
 
 
 
 
-
--fix it so new elements can't appear in already occupied grid space
+-fix it so new elements can't appear in already occupied grid space?
 
 
 
 element ideas:
-food (gain experience and points)
+
 health item (refill life and get points)?
 just score (just gives various amounts of points)
-stationary bad cells (lava, spikes, whatever)
-  -variations: lose health, lose segment, die
+higher levels- bottomless pit (die)
 moving enemies (same variations as above)
 powerup that lets you eat an enemy or survive stationary bad elements?
 
