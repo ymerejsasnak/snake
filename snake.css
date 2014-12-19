@@ -37,8 +37,8 @@ li span {
 .cell {
 	float: left;
 	margin: 0;
-	width: 2.5%;
-  height: 2.5%;
+	width: 4%;
+  height: 4%;
   text-align: center;
   color: red;
   text-shadow: 1px 1px 2px black;

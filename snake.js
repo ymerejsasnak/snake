@@ -2,7 +2,7 @@
 
 //these are intended to act as constants for readability of code
 
-var GRID_SIZE = 40;
+var GRID_SIZE = 25;
 
 var X = 0;
 var Y = 1;
@@ -45,8 +45,6 @@ function initializeGrid() {
 
    	}
   }
-  grid["20,20"] = HEAD;
-
   return grid;
 }
 
@@ -54,7 +52,7 @@ function initializeGrid() {
 
 function Game() {
   this.score = 0;
-  this.speed = 10; //temp?
+  this.speed = 5; //temp?
   this.grid = initializeGrid();
   this.snake = new Snake();
 }
@@ -62,7 +60,7 @@ function Game() {
 Game.prototype.displayScore = function() {
   $("#level").text(this.snake.level);
   $("#size").text(this.snake.bodySegments.length);
-  $("#experience").text(this.snake.experience + " of " + this.snake.level);
+  $("#experience").text(this.snake.level - this.snake.experience);
   $("#health").text(this.snake.health + "/" + this.snake.maxHealth);
   $("#speed").text(this.speed);
   $("#score").text(this.score);
@@ -218,14 +216,14 @@ function Snake() {
   this.health = 2;
   this.maxHealth = 2;
   this.direction = "r";
-  this.bodySegments = [ [20,20] ];
+  this.bodySegments = [ [Math.floor(GRID_SIZE / 2), Math.floor(GRID_SIZE / 2)] ];
   this.alive = true;
 }
 
 
 
 function Element() {
-  this.position = [Math.floor(Math.random() * 40), Math.floor(Math.random() * 40)]; 
+  this.position = [Math.floor(Math.random() * GRID_SIZE), Math.floor(Math.random() * GRID_SIZE)]; 
 }
 
 
@@ -282,17 +280,17 @@ function move( position, direction ) {
   	  break;
   }
 
-  if ( x === 40 ) {
+  if ( x === GRID_SIZE ) {
     x = 0;
   }
   if ( x === -1 ) {
-    x = 39;
+    x = GRID_SIZE - 1;
   }
-  if ( y === 40 ) {
+  if ( y === GRID_SIZE ) {
     y = 0;
   }
   if ( y === -1 ) { 
-    y = 39;
+    y = GRID_SIZE - 1;
   }
 
   return [x, y];
