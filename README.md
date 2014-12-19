@@ -9,8 +9,7 @@ Odin project - Snake game using javascript/jQuery
 
 -keep tweaking visuals
 
-
-
+-currently can sort of 'pause' the game by hitting any button other than arrows...leave it for now, but will have to fix in the end
 
 
 
@@ -21,12 +20,10 @@ Odin project - Snake game using javascript/jQuery
 -fix it so new elements can't appear in already occupied grid space
 
 
--maybe make more fruit appear the longer the game goes on (instead of just one at a time)
-
 
 element ideas:
 food (gain experience and points)
-health item (refill life and get points)
+health item (refill life and get points)?
 just score (just gives various amounts of points)
 stationary bad cells (lava, spikes, whatever)
   -variations: lose health, lose segment, die
@@ -37,8 +34,6 @@ powerup that lets you eat an enemy or survive stationary bad elements?
 
 numbers plan:
 
-needed experience to get to next level === current level
-levelup adds a segment
 score gained depends on level and number of segments and type of scoring item
 max health depends on level and segments?
 speed depends on level (once i figure out how to speed it up properly)

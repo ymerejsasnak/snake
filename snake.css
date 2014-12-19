@@ -6,9 +6,23 @@ body {
 
 #status-box {
 	float: left;
-	width: 10%;
+	width: 20%;
 	background: white;
 }
+
+li {
+	text-align: center;
+	line-height: 2em;
+	font-size: 2em;
+}
+
+li span {
+	color: red;
+}
+
+
+
+
 
 #grid-container {
 	margin: 1% auto;

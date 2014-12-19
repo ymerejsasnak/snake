@@ -135,9 +135,10 @@ Game.prototype.ateFood = function(tailIndex) {
     this.snake.bodySegments.push( this.snake.bodySegments[tailIndex] );
   }
 
-  //make more food
+  //replace eaten food
   var food = new Food();
   this.grid[food.position.join(",")] = FOOD;
+  
 }
 
 
@@ -158,6 +159,8 @@ function Food() {
   this.position = [Math.floor(Math.random() * 40), Math.floor(Math.random() * 40)]  
   //right now food will overlap and snake may start on food....
 }
+
+
 
 
 
