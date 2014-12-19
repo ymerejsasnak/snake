@@ -6,16 +6,16 @@ body {
 
 #status-box {
 	float: left;
-	width: 20%;
+	width: 10%;
 	background: white;
 }
 
 #grid-container {
-	margin: 2% auto;
-	width: 50%;
-	height: 80.7%;
+	margin: 1% auto;
+	width: 60%;
+	height: 91%;
 	border: 1px solid black;
-	background: linear-gradient(#DDD, #AAA);
+	background: linear-gradient(#6B6, #7C7);
 }
 
 
@@ -33,19 +33,18 @@ body {
 
 
 .food {
-	background: radial-gradient(#F44, #F00);
-	border-radius: 50%;
-	box-shadow: 2px 2px 5px black;
+	background-image: url(apple.png);
+	background-size: contain;
 }
 
 .segment {
 	background: radial-gradient(#99F, #44F);
-	border-radius: 30%;
+	border-radius: 50%;
 	box-shadow: 2px 2px 5px black;
 }
 
 .head {
 	background: radial-gradient(#44F, #00F);
-	border-radius: 50%;
+	border-radius: 20%;
 	box-shadow: 2px 2px 5px black;
 }

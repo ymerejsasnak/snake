@@ -58,6 +58,7 @@ function Game() {
 
 Game.prototype.displayScore = function() {
   $("#level").text(this.snake.level);
+  $("#size").text(this.snake.bodySegments.length);
   $("#experience").text(this.snake.experience);
   $("#health").text(this.snake.health);
   $("#speed").text(this.speed);
@@ -149,6 +150,9 @@ function run(grid, snake) {
 
 
 function eatFood(grid, snake, tailIndex) {
+  
+
+
   snake.bodySegments.push( snake.bodySegments[tailIndex] );
   
   var food = new Food();
