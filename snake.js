@@ -11,9 +11,10 @@ var Y = 1;
 var EMPTY = " ";
 var HEAD = "O";
 var BODY = "o";
-var FOOD = "*"; //eat to level up and grow (and get some points)
+var FOOD = "+"; //eat to level up and grow (and get some points)
 var FIRE = "~"; //destroys a body segment
 var SPIKE = "^"; //lose 1 health per level
+var STAR1 = "*"; //score length * level
 
 //direction values
 var RIGHT = "r";
@@ -90,6 +91,9 @@ Game.prototype.render = function() {
       case SPIKE:
         cellClass = "spike";
         break;
+      case STAR1:
+        cellClass = "star1";
+        break;
 
     }
     container.append( "<div class='cell " + cellClass + "'></div>" );   
@@ -143,6 +147,11 @@ Game.prototype.run = function() {
     this.ateFood();
   }
 
+  //hits star (scores length * level)
+  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === STAR1 ) {
+    this.score += this.snake.level * this.snake.bodySegments.length;
+  }
+
 
 
   //build body and head in new position
@@ -157,7 +166,7 @@ Game.prototype.run = function() {
 
 Game.prototype.ateFood = function() {
   //replace eaten food
-  var food = new Food();
+  var food = new Element();
   this.grid[food.position.join(",")] = FOOD;
 
   //get experience
@@ -181,7 +190,7 @@ Game.prototype.levelUp = function() {
   //add fire starting at level 3, # added increases by half of current level, rounded down
   if (this.snake.level > 2) {
     for (var i = 0; i < Math.floor(this.snake.level / 2); i++) {
-      var fire = new Lava();
+      var fire = new Element();
       this.grid[fire.position.join(",")] = FIRE;
     }
   }
@@ -189,10 +198,15 @@ Game.prototype.levelUp = function() {
   //add spikes starting at level 1, 2 per level
   if (this.snake.level > 1) {
     for (var i = 0; i < 2; i++) {
-      var spike = new Spike();
+      var spike = new Element();
       this.grid[spike.position.join(",")] = SPIKE;
     }
+  }
 
+  //add star starting at level 2, one every 2 levels
+  if (this.snake.level % 2 === 0) {
+    var star1 = new Element();
+    this.grid[star1.position.join(",")] = STAR1;
   }
 }
 
@@ -209,18 +223,9 @@ function Snake() {
 }
 
 
-//(can these all be made into single function that accepts a type?)
-function Food() {
+
+function Element() {
   this.position = [Math.floor(Math.random() * 40), Math.floor(Math.random() * 40)]; 
-}
-
-
-function Lava() {
-  this.position = [Math.floor(Math.random() * 40), Math.floor(Math.random() * 40)];
-}
-
-function Spike() {
-  this.position = [Math.floor(Math.random() * 40), Math.floor(Math.random() * 40)];
 }
 
 
@@ -308,7 +313,7 @@ $( document ).ready( function() {
 
   //create food
   for (var i = 0; i < 5; i++) {
-    var food = new Food();
+    var food = new Element();
     game.grid[food.position.join(",")] = FOOD;
   }
 

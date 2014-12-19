@@ -14,7 +14,7 @@ Odin project - Snake game using javascript/jQuery
 
 -add reset button and pause button
 
-
+-speed depends on level (once i figure out how to speed it up properly)
 
 
 -fix it so new elements can't appear in already occupied grid space?
@@ -23,19 +23,8 @@ Odin project - Snake game using javascript/jQuery
 
 element ideas:
 
-health item (refill life and get points)?
-just score (just gives various amounts of points)
 higher levels- bottomless pit (die)
-moving enemies (same variations as above)
+moving enemies? (same variations as above)
 powerup that lets you eat an enemy or survive stationary bad elements?
-
-
-
-numbers plan:
-
-score gained depends on level and number of segments and type of scoring item
-max health depends on level and segments?
-speed depends on level (once i figure out how to speed it up properly)
-number and type of elements that appears depends on level
 
 </pre>
