@@ -59,18 +59,95 @@ function Game() {
 Game.prototype.displayScore = function() {
   $("#level").text(this.snake.level);
   $("#size").text(this.snake.bodySegments.length);
-  $("#experience").text(this.snake.experience);
-  $("#health").text(this.snake.health);
+  $("#experience").text(this.snake.experience + " of " + this.snake.level);
+  $("#health").text(this.snake.health + "/" + this.snake.maxHealth);
   $("#speed").text(this.speed);
   $("#score").text(this.score);
 }
+
+Game.prototype.render = function() {
+  var container = $( "#grid-container" );
+  container.empty();
+
+  for (var pos in this.grid) {
+    var cellClass = "";
+
+    switch (this.grid[pos]) {
+      case HEAD:
+        cellClass = "head";
+        break;
+      case BODY:
+        cellClass = "segment";
+        break;
+      case FOOD:
+        cellClass = "food";
+        break;
+    }
+    container.append( "<div class='cell " + cellClass + "'></div>" );   
+  }
+}
+
+Game.prototype.run = function() {
+  
+  var tailIndex = this.snake.bodySegments.length - 1;
+  var lastHeadPosition = this.snake.bodySegments[0];
+
+  //clear last tail from grid
+  this.grid[ this.snake.bodySegments[tailIndex].join(",") ] = EMPTY; 
+
+  //add new head position to front of segments array
+  this.snake.bodySegments.unshift( move(lastHeadPosition, this.snake.direction) );
+
+  //erase last tail from segments array
+  this.snake.bodySegments.pop();
+  
+
+  //hits itself
+  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === BODY) { 
+    this.snake.alive = false; 
+  }
+  
+  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === FOOD ) {
+    this.ateFood(tailIndex);
+
+  }
+
+  this.snake.bodySegments.forEach( function(element, index, array) {
+    this.grid[array[index].join(",")] = BODY;
+  }, this);
+  
+  this.grid[ this.snake.bodySegments[0].join(",") ] = HEAD;
+  
+  this.render();
+}
+
+Game.prototype.ateFood = function(tailIndex) {
+  //get experience
+  this.snake.experience += 1;
+  this.score += this.snake.level; //food gives 1 point per current level
+
+  //level up
+  if (this.snake.experience === this.snake.level) {
+    this.snake.level += 1;
+    this.snake.experience = 0;
+    this.snake.maxHealth = this.snake.level * 2;
+    this.snake.health = this.snake.maxHealth;
+    this.snake.bodySegments.push( this.snake.bodySegments[tailIndex] );
+  }
+
+  //make more food
+  var food = new Food();
+  this.grid[food.position.join(",")] = FOOD;
+}
+
 
 
 
 function Snake() {
   this.level = 1;
   this.experience = 0;
-  this.health = this.level * 2;
+  this.health = 2;
+  this.maxHealth = 2;
   this.direction = "r";
   this.bodySegments = [ [20,20] ];
   this.alive = true;
@@ -83,81 +160,17 @@ function Food() {
 }
 
 
-function render(grid) {
-
-  var container = $( "#grid-container" );
-  container.empty();
-
-  for (var pos in grid) {
-    var cellClass = "";
-
-    switch (grid[pos]) {
-      case HEAD:
-        cellClass = "head";
-        break;
-      case BODY:
-        cellClass = "segment";
-        break;
-      case FOOD:
-        cellClass = "food";
-        break;
-    }
-    
-    container.append( "<div class='cell " + cellClass + "'></div>" );   
-  }
-}
 
 
 
 
 
 
-function run(grid, snake) {
-  
-  var tailIndex = snake.bodySegments.length - 1;
-  var lastHeadPosition = snake.bodySegments[0];
-
-  //clear last tail from grid
-  grid[ snake.bodySegments[tailIndex].join(",") ] = EMPTY; 
-
-  //add new head position to front of segments array
-  snake.bodySegments.unshift( move(lastHeadPosition, snake.direction) );
-
-  //erase last tail from segments array
-  snake.bodySegments.pop();
-  
-
-  if ( grid[snake.bodySegments[0].join(",")] === BODY) { 
-    snake.alive = false; 
-  }
-  
-  if ( grid[snake.bodySegments[0].join(",")] === FOOD ) {
-    eatFood(grid, snake, tailIndex);
-  }
-
-  snake.bodySegments.forEach( function(element, index, array) {
-    grid[array[index].join(",")] = BODY;
-  });
-  
-  grid[ snake.bodySegments[0].join(",") ] = HEAD;
-  
-  render(grid);
-  
- 
-}
 
 
 
+//keep refactoring...make these part of objects (mostly game object?)
 
-function eatFood(grid, snake, tailIndex) {
-  
-
-
-  snake.bodySegments.push( snake.bodySegments[tailIndex] );
-  
-  var food = new Food();
-  grid[food.position.join(",")] = FOOD;
-}
 
 
 
@@ -223,18 +236,26 @@ function move( position, direction ) {
 
 
 
+
+
+
+
 $( document ).ready( function() {
   
   
   var game = new Game();
 
+
+  //create food
   for (var i = 0; i < 5; i++) {
     var food = new Food();
     game.grid[food.position.join(",")] = FOOD;
   }
 
 
-  render(game.grid);
+  game.render();
+
+
 
 
   $( document ).on( "keydown", function( event ) {
@@ -247,7 +268,7 @@ $( document ).ready( function() {
  
   //game loop
   var intervalID = setInterval(function() { 
-      run(game.grid, game.snake);
+      game.run();
       if (!game.snake.alive) {
         clearInterval(intervalID);
       }
