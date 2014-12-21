@@ -52,7 +52,7 @@ function initializeGrid() {
 
 function Game() {
   this.score = 0;
-  this.speed = 5; //temp?
+  this.speed = 10; //temp?
   this.grid = initializeGrid();
   this.snake = new Snake();
 }
@@ -116,11 +116,6 @@ Game.prototype.run = function() {
 
   //collision detection needs its own function, can run it by element type?
 
-  //hits itself
-  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === BODY) { 
-    this.snake.alive = false; 
-  }
-  
   //hits fire, loses a segment
   if ( this.grid[ this.snake.bodySegments[0].join(",") ] === FIRE) { 
     this.grid[ this.snake.bodySegments[tailIndex].join(",") ] = EMPTY; 
@@ -159,7 +154,6 @@ Game.prototype.run = function() {
   
   this.grid[ this.snake.bodySegments[0].join(",") ] = HEAD;
   
-  this.render();
 }
 
 Game.prototype.ateFood = function() {
@@ -232,10 +226,7 @@ function Element() {
 
 
 
-//keep refactoring...make these part of objects (mostly game object?)
-
-
-
+//keep refactoring...make these part of objects (both game object? or should move go in snake?)
 
 
 function keyHandler( keyEvent ) {
@@ -309,7 +300,7 @@ $( document ).ready( function() {
   var game = new Game();
 
 
-  //create food
+  //create 5 food
   for (var i = 0; i < 5; i++) {
     var food = new Element();
     game.grid[food.position.join(",")] = FOOD;
@@ -335,6 +326,7 @@ $( document ).ready( function() {
       if (!game.snake.alive) {
         clearInterval(intervalID);
       }
+      game.render();
       game.displayScore();
     }, 1000 / game.speed);  
   
