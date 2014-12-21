@@ -167,7 +167,9 @@ Game.prototype.ateFood = function() {
   //level up
   if (this.snake.experience === this.snake.level) {
     this.levelUp();
-    this.speed += 1;
+    if ((this.snake.level + 1) % 3 === 0) { //adds one speed every 3 levels starting at level 2
+      this.speed += 1; 
+    }
   }
 }
 
@@ -340,7 +342,7 @@ $( document ).ready( function() {
   mainLoop(game);
     
   
-  //temp for testing
+  
   //snake died code here
 
 
