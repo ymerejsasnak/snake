@@ -52,7 +52,7 @@ function initializeGrid() {
 
 function Game() {
   this.score = 0;
-  this.speed = 10; //temp?
+  this.speed = 4; 
   this.grid = initializeGrid();
   this.snake = new Snake();
 }
@@ -122,38 +122,37 @@ Game.prototype.run = function() {
     this.snake.bodySegments.pop(); 
     this.snake.maxHealth -= 1;
     this.snake.health -= 1;
-    if (this.snake.bodySegments.length === 0 || this.snake.health <= 0) {
+    if (this.snake.bodySegments.length <= 0 || this.snake.health <= 0) {
       this.snake.alive = false;
     }
   }
-
   //hits spike, loses 2 health
-  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === SPIKE ) {
+  else if ( this.grid[ this.snake.bodySegments[0].join(",") ] === SPIKE ) {
     this.snake.health -= 2;
     if (this.snake.health <= 0) {
       this.snake.alive = false;
     }
   }
-
   //hits food
-  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === FOOD ) {
+  else if ( this.grid[ this.snake.bodySegments[0].join(",") ] === FOOD ) {
     this.ateFood();
   }
-
   //hits star (scores length * level)
-  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === STAR1 ) {
+  else if ( this.grid[ this.snake.bodySegments[0].join(",") ] === STAR1 ) {
     this.score += this.snake.level * this.snake.bodySegments.length;
   }
 
 
 
-  //build body and head in new position
-  this.snake.bodySegments.forEach( function(element, index, array) {
-    this.grid[array[index].join(",")] = BODY;
-  }, this);
+  //build body and head in new position if still alive after collisions
+  if (this.snake.alive) {
+    this.snake.bodySegments.forEach( function(element, index, array) {
+      this.grid[array[index].join(",")] = BODY;
+    }, this);
   
-  this.grid[ this.snake.bodySegments[0].join(",") ] = HEAD;
-  
+    this.grid[ this.snake.bodySegments[0].join(",") ] = HEAD;
+  }
+
 }
 
 Game.prototype.ateFood = function() {
@@ -168,31 +167,29 @@ Game.prototype.ateFood = function() {
   //level up
   if (this.snake.experience === this.snake.level) {
     this.levelUp();
+    this.speed += 1;
   }
 }
 
 Game.prototype.levelUp = function() {
   this.snake.level += 1;
+  this.snake.leveledUp = true;
   this.snake.experience = 0;
   this.snake.bodySegments.push( this.snake.bodySegments[this.snake.bodySegments.length - 1] );
   this.snake.maxHealth = this.snake.level + this.snake.bodySegments.length; //max health is level + length
   this.snake.health = this.snake.maxHealth; //leveling fills health
   
 
-  //add fire starting at level 3, # added increases by half of current level, rounded down
-  if (this.snake.level > 2) {
-    for (var i = 0; i < Math.floor(this.snake.level / 2); i++) {
-      var fire = new Element();
-      this.grid[fire.position.join(",")] = FIRE;
-    }
+  //add fire starting at level 2, # added increases by half of current level, rounded down
+  for (var i = 0; i < Math.floor(this.snake.level / 2); i++) {
+    var fire = new Element();
+    this.grid[fire.position.join(",")] = FIRE;
   }
-
-  //add spikes starting at level 1, 2 per level
-  if (this.snake.level > 1) {
-    for (var i = 0; i < 2; i++) {
-      var spike = new Element();
-      this.grid[spike.position.join(",")] = SPIKE;
-    }
+  
+  //add spikes starting at level 2, 2 per level
+  for (var i = 0; i < 2; i++) {
+    var spike = new Element();
+    this.grid[spike.position.join(",")] = SPIKE;
   }
 
   //add star starting at level 2, one every 2 levels
@@ -211,6 +208,7 @@ function Snake() {
   this.maxHealth = 2;
   this.direction = "r";
   this.bodySegments = [ [Math.floor(GRID_SIZE / 2), Math.floor(GRID_SIZE / 2)] ];
+  this.leveledUp = false; //to trigger time interval change in game loop
   this.alive = true;
 }
 
@@ -292,13 +290,35 @@ function move( position, direction ) {
 
 
 
+function mainLoop(game) {
+  var intervalID = setInterval(function() { 
+    game.run();
+    
+    if (game.snake.leveledUp) {
+      clearInterval(intervalID);
+      game.snake.leveledUp = false;
+      mainLoop(game); //restart, but with new speed
+    }
+
+    if (!game.snake.alive) {
+      clearInterval(intervalID);
+      alert("dead")
+    }
+
+    game.render();
+    game.displayScore();
+
+  }, 1000 / game.speed);
+}
+
+
+
+
 
 
 $( document ).ready( function() {
   
-  
   var game = new Game();
-
 
   //create 5 food
   for (var i = 0; i < 5; i++) {
@@ -306,31 +326,21 @@ $( document ).ready( function() {
     game.grid[food.position.join(",")] = FOOD;
   }
 
-
-  game.render();
-
+  game.render(); //initial rendering
 
 
 
   $( document ).on( "keydown", function( event ) {
-
     event.preventDefault();
     game.snake.direction = keyHandler( event );
-     
   });
 
- 
-  //game loop
-  var intervalID = setInterval(function() { 
-      game.run();
-      if (!game.snake.alive) {
-        clearInterval(intervalID);
-      }
-      game.render();
-      game.displayScore();
-    }, 1000 / game.speed);  
+
+
+  mainLoop(game);
+    
   
-  
+  //temp for testing
   //snake died code here
 
 
