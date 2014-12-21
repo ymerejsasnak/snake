@@ -122,16 +122,10 @@ Game.prototype.run = function() {
     this.snake.bodySegments.pop(); 
     this.snake.maxHealth -= 1;
     this.snake.health -= 1;
-    if (this.snake.bodySegments.length <= 0 || this.snake.health <= 0) {
-      this.snake.alive = false;
-    }
   }
   //hits spike, loses 2 health
   else if ( this.grid[ this.snake.bodySegments[0].join(",") ] === SPIKE ) {
     this.snake.health -= 2;
-    if (this.snake.health <= 0) {
-      this.snake.alive = false;
-    }
   }
   //hits food
   else if ( this.grid[ this.snake.bodySegments[0].join(",") ] === FOOD ) {
@@ -142,6 +136,15 @@ Game.prototype.run = function() {
     this.score += this.snake.level * this.snake.bodySegments.length;
   }
 
+  if (this.snake.bodySegments.length <= 0 || this.snake.health <= 0) {
+      this.snake.alive = false;
+  }
+  else if (this.snake.level > 1 && this.snake.health < 4) {
+    $("#grid-container").addClass("danger");
+  }
+  else {
+    $("#grid-container").removeClass("danger");
+  }
 
 
   //build body and head in new position if still alive after collisions
