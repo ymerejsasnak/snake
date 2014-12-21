@@ -157,7 +157,7 @@ Game.prototype.run = function() {
 
 Game.prototype.ateFood = function() {
   //replace eaten food
-  var food = new Element();
+  var food = new Element(this.grid);
   this.grid[food.position.join(",")] = FOOD;
 
   //get experience
@@ -184,19 +184,19 @@ Game.prototype.levelUp = function() {
 
   //add fire starting at level 2, # added increases by half of current level, rounded down
   for (var i = 0; i < Math.floor(this.snake.level / 2); i++) {
-    var fire = new Element();
+    var fire = new Element(this.grid);
     this.grid[fire.position.join(",")] = FIRE;
   }
   
   //add spikes starting at level 2, 2 per level
   for (var i = 0; i < 2; i++) {
-    var spike = new Element();
+    var spike = new Element(this.grid);
     this.grid[spike.position.join(",")] = SPIKE;
   }
 
   //add star starting at level 2, one every 2 levels
   if (this.snake.level % 2 === 0) {
-    var star1 = new Element();
+    var star1 = new Element(this.grid);
     this.grid[star1.position.join(",")] = STAR1;
   }
 }
@@ -216,8 +216,10 @@ function Snake() {
 
 
 
-function Element() {
-  this.position = [Math.floor(Math.random() * GRID_SIZE), Math.floor(Math.random() * GRID_SIZE)]; 
+function Element(grid) {
+  do {
+    this.position = [Math.floor(Math.random() * GRID_SIZE), Math.floor(Math.random() * GRID_SIZE)]; 
+  } while (grid[this.position.join(",")] !== EMPTY); //make sure elements spawn on empty space
 }
 
 
@@ -324,7 +326,7 @@ $( document ).ready( function() {
 
   //create 5 food
   for (var i = 0; i < 5; i++) {
-    var food = new Element();
+    var food = new Element(game.grid);
     game.grid[food.position.join(",")] = FOOD;
   }
 
