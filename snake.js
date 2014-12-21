@@ -229,8 +229,8 @@ function Element() {
 //keep refactoring...make these part of objects (both game object? or should move go in snake?)
 
 
-function keyHandler( keyEvent ) {
-  var direction;
+function keyHandler( keyEvent, currentDirection ) {
+  var direction = currentDirection;
 
   switch ( keyEvent.which ) {
     case LEFT_ARROW:
@@ -245,6 +245,7 @@ function keyHandler( keyEvent ) {
     case DOWN_ARROW:
       direction = DOWN;
       break;
+
   }
   
   return direction;
@@ -304,7 +305,6 @@ function mainLoop(game) {
 
     if (!game.snake.alive) {
       clearInterval(intervalID);
-      alert("dead")
     }
 
     game.render();
@@ -334,7 +334,7 @@ $( document ).ready( function() {
 
   $( document ).on( "keydown", function( event ) {
     event.preventDefault();
-    game.snake.direction = keyHandler( event );
+    game.snake.direction = keyHandler( event, game.snake.direction );
   });
 
 
