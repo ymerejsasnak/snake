@@ -6,18 +6,10 @@ like traditional snake game (eat food to grow) but in this you can cross your pa
 
 
 
-###TODO:
-
-
-
--add reset button and pause button?
-
-
--use localstorage to store high score (and high level and high length)! (very easy)
-
-
--add endgame code (you died, your score vs highscore, play again, blah blah blah)
-
-
--add basic legend/instructions/about
+###TO DO:
+* clean up messy non-robust code
+* improve display/visuals
+* address any cross-browser/responsive design type of issues
+* add basic legend/instructions/about
+* improve newgame code to handle reset programmatically rather than just reloading the whole page
 

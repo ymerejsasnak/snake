@@ -1,12 +1,12 @@
 "use strict";
 
+/////////////////////////////////////////////////////
 //these are intended to act as constants for readability of code
 
 var GRID_SIZE = 25;
 
 var X = 0;
 var Y = 1;
-
 
 
 //possible cell states
@@ -30,6 +30,7 @@ var RIGHT_ARROW = 39;
 var DOWN_ARROW = 40;
 
 
+//////////////////////////////////////////////////////////////
 
 
 
@@ -64,7 +65,7 @@ Game.prototype.displayScore = function() {
   $("#experience").text(this.snake.level - this.snake.experience);
   $("#speed").text(this.speed);
   $("#score").text(this.score);
-}
+};
 
 Game.prototype.render = function() {
   var container = $( "#grid-container" );
@@ -93,7 +94,7 @@ Game.prototype.render = function() {
     }
     container.append( "<div class='cell " + cellClass + "'></div>" );   
   }
-}
+};
 
 Game.prototype.run = function() {
   
@@ -149,7 +150,7 @@ Game.prototype.run = function() {
     this.grid[ this.snake.bodySegments[0].join(",") ] = HEAD;
   }
 
-}
+};
 
 Game.prototype.ateFood = function() {
   //replace eaten food
@@ -167,7 +168,7 @@ Game.prototype.ateFood = function() {
       this.speed += 1; 
     }
   }
-}
+};
 
 Game.prototype.levelUp = function() {
   this.snake.level += 1;
@@ -187,7 +188,7 @@ Game.prototype.levelUp = function() {
     var star1 = new Element(this.grid);
     this.grid[star1.position.join(",")] = STAR1;
   }
-}
+};
 
 
 
@@ -285,14 +286,38 @@ function mainLoop(game) {
   var intervalID = setInterval(function() { 
     game.run();
     
+    //speed up if leveled up
     if (game.snake.leveledUp) {
       clearInterval(intervalID);
       game.snake.leveledUp = false;
-      mainLoop(game); //restart, but with new speed
+      mainLoop(game);
     }
 
+    //end game code here
     if (!game.snake.alive) {
       clearInterval(intervalID);
+            
+      //set high score
+      if (!localStorage.snakeHighScore) {
+        localStorage.snakeHighScore = 0;
+      }
+      if (game.score > localStorage.snakeHighScore) {
+        localStorage.snakeHighScore = game.score;
+      }
+
+      //display scores
+      $("#end-score").text(game.score);
+      $("#high-score").text(localStorage.snakeHighScore);
+      $("#endgame").fadeIn();
+
+      //click to restart (right now just does dirty yucky full reload)
+      $("body").on("click", function() {
+        location.reload();
+      })
+
+
+
+
     }
 
     game.render();
@@ -331,7 +356,5 @@ $( document ).ready( function() {
     
   
   
-  //snake died code here
-
 
 });

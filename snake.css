@@ -97,3 +97,28 @@ li span {
 	border-radius: 50%;
 	box-shadow: 0 0 10px white;
 }
+
+
+
+
+
+#endgame{
+	display: none;
+	position: absolute;
+	top: 40%;
+	left: 10%;
+	width: 80%;
+	height: 20%;
+	background: white;
+	box-shadow: 0 0 25px white;
+}
+
+#endgame p {
+	font-size: 2em;
+	line-height: 1.2em;
+	text-align: center;
+}
+
+#playagain {
+	color: red;
+}
