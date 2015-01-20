@@ -1,24 +1,30 @@
+html, body {
+	height: 100%;
+}
+
 body {
-	height: 100vh;
 	background: linear-gradient(#111, #222);
 }
 
 
 #status-box {
-	float: left;
-	width: 18%;
-	margin-left: 1%;
-	background: white;
+	margin: 1% auto;
 }
 
-li {
+ul {
 	text-align: center;
-	line-height: 2em;
+}
+li {
+	display: inline-block;
+	color: lightgray;
+	text-align: center;
+	margin: 0 1% 0 1%;
+	line-height: 1em;
 	font-size: 2em;
 }
 
 li span {
-	color: red;
+	color: white;
 }
 
 

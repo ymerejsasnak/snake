@@ -8,11 +8,6 @@ like traditional snake game (eat food to grow) but in this you can cross your pa
 
 ###TODO:
 
- simplify game...too hard to pay attention to stats.  cut fire and health and just keep spikes...hitting spikes loses a paw
-
-
--improve look: cut unneccessary stats from display, put them above or below game field
-(keep: level, to next, and score and add high score (and high length?))
 
 
 -add reset button and pause button?

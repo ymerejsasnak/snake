@@ -131,8 +131,8 @@ Game.prototype.run = function() {
       this.snake.alive = false;
   }
 
-  //red glow if almost dead
-  else if (this.snake.level > 1 && this.snake.bodySegments.length < 3) {
+  //red glow if almost dead (but not if it's the first 2 levels)
+  else if (this.snake.level > 2 && this.snake.bodySegments.length < 3) {
     $("#grid-container").addClass("danger");
   }
   else {
