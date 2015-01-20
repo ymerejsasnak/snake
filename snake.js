@@ -7,13 +7,14 @@ var GRID_SIZE = 25;
 var X = 0;
 var Y = 1;
 
+
+
 //possible cell states
 var EMPTY = " ";
 var HEAD = "O";
 var BODY = "o";
 var FOOD = "+"; //eat to level up and grow (and get some points)
-var FIRE = "~"; //destroys a body segment
-var SPIKE = "^"; //lose 1 health per level
+var SPIKE = "^"; //lose paw
 var STAR1 = "*"; //score length * level
 
 //direction values
@@ -61,7 +62,6 @@ Game.prototype.displayScore = function() {
   $("#level").text(this.snake.level);
   $("#size").text(this.snake.bodySegments.length);
   $("#experience").text(this.snake.level - this.snake.experience);
-  $("#health").text(this.snake.health + "/" + this.snake.maxHealth);
   $("#speed").text(this.speed);
   $("#score").text(this.score);
 }
@@ -82,9 +82,6 @@ Game.prototype.render = function() {
         break;
       case FOOD:
         cellClass = "food";
-        break;
-      case FIRE:
-        cellClass = "fire";
         break;
       case SPIKE:
         cellClass = "spike";
@@ -109,37 +106,33 @@ Game.prototype.run = function() {
   //add new head position to front of segments array
   this.snake.bodySegments.unshift( move(lastHeadPosition, this.snake.direction) );
 
-  //erase last tail from segments array
+  //remove last tail from segments array
   this.snake.bodySegments.pop();
   
 
 
-  //collision detection needs its own function, can run it by element type?
+  //collision detection should have its own function, can run it by element type?
 
-  //hits fire, loses a segment
-  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === FIRE) { 
+  //hits spike, loses a segment
+  if ( this.grid[ this.snake.bodySegments[0].join(",") ] === SPIKE) { 
     this.grid[ this.snake.bodySegments[tailIndex].join(",") ] = EMPTY; 
     this.snake.bodySegments.pop(); 
-    this.snake.maxHealth -= 1;
-    this.snake.health -= 1;
   }
-  //hits spike, loses 2 health
-  else if ( this.grid[ this.snake.bodySegments[0].join(",") ] === SPIKE ) {
-    this.snake.health -= 2;
-  }
-  //hits food
+  //eats food
   else if ( this.grid[ this.snake.bodySegments[0].join(",") ] === FOOD ) {
     this.ateFood();
   }
-  //hits star (scores length * level)
+  //gets star (scores length * level)
   else if ( this.grid[ this.snake.bodySegments[0].join(",") ] === STAR1 ) {
     this.score += this.snake.level * this.snake.bodySegments.length;
   }
 
-  if (this.snake.bodySegments.length <= 0 || this.snake.health <= 0) {
+  if (this.snake.bodySegments.length <= 0) {
       this.snake.alive = false;
   }
-  else if (this.snake.level > 1 && this.snake.health < 4) {
+
+  //red glow if almost dead
+  else if (this.snake.level > 1 && this.snake.bodySegments.length < 3) {
     $("#grid-container").addClass("danger");
   }
   else {
@@ -181,22 +174,14 @@ Game.prototype.levelUp = function() {
   this.snake.leveledUp = true;
   this.snake.experience = 0;
   this.snake.bodySegments.push( this.snake.bodySegments[this.snake.bodySegments.length - 1] );
-  this.snake.maxHealth = this.snake.level + this.snake.bodySegments.length; //max health is level + length
-  this.snake.health = this.snake.maxHealth; //leveling fills health
-  
+    
 
   //add fire starting at level 2, # added increases by half of current level, rounded down
   for (var i = 0; i < Math.floor(this.snake.level / 2); i++) {
     var fire = new Element(this.grid);
-    this.grid[fire.position.join(",")] = FIRE;
+    this.grid[fire.position.join(",")] = SPIKE;
   }
   
-  //add spikes starting at level 2, 2 per level
-  for (var i = 0; i < 2; i++) {
-    var spike = new Element(this.grid);
-    this.grid[spike.position.join(",")] = SPIKE;
-  }
-
   //add star starting at level 2, one every 2 levels
   if (this.snake.level % 2 === 0) {
     var star1 = new Element(this.grid);
@@ -209,8 +194,6 @@ Game.prototype.levelUp = function() {
 function Snake() {
   this.level = 1;
   this.experience = 0;
-  this.health = 2;
-  this.maxHealth = 2;
   this.direction = "r";
   this.bodySegments = [ [Math.floor(GRID_SIZE / 2), Math.floor(GRID_SIZE / 2)] ];
   this.leveledUp = false; //to trigger time interval change in game loop

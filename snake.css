@@ -76,13 +76,6 @@ li span {
 	box-shadow: 0 0 50px red;
 }
 
-.fire {
-	background-image: url(fire.png);
-	background-size: contain;
-	background-position: center;
-	background-repeat: no-repeat;
-}
-
 .spike {
 	background-image: url(spikes.png);
 	background-size: contain;
